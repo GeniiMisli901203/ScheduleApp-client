@@ -20,7 +20,7 @@ foundation = "1.7.8"
 foundationVersion = "1.5.1"
 jsoup = "1.15.3"
 jsoupVersion = "1.15.3"
-kotlin = "1.9.0"
+kotlin = "1.9.20"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -133,3 +133,4 @@ androidx-compose-animation-core-lint = { group = "androidx.compose.animation", n
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

@@ -26,15 +26,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Article
 import androidx.compose.material.icons.outlined.CalendarToday
-import androidx.compose.material.icons.outlined.Grade
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.BottomAppBar
@@ -58,7 +54,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -68,20 +63,63 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.ks1compose.Screens.*
-import com.example.ks1compose.models.TokenManager
-import com.example.ks1compose.ui.theme.DarkGrey
-import com.example.ks1compose.ui.theme.KS1ComposeTheme
-import com.example.ks1compose.ui.theme.LightGrey
-import com.example.ks1compose.viewmodels.*
-import com.example.ks1compose.viewmodels.factories.NewsViewModelFactory
-import com.example.ks1compose.viewmodels.factories.ScheduleViewModelFactory
+import com.example.ks1compose.data.datasource.remote.TokenManager
+import com.example.ks1compose.presentation.ui.grades.AdminEditGradesScreen
+import com.example.ks1compose.presentation.ui.admin.AdminScheduleScreen
+import com.example.ks1compose.presentation.ui.admin.AdminScreen
+import com.example.ks1compose.presentation.ui.auth.AuthViewModel
+import com.example.ks1compose.presentation.ui.auth.LoginScreen
+import com.example.ks1compose.presentation.ui.auth.RegistrationScreen
+import com.example.ks1compose.presentation.ui.dashboard.DashboardScreen
+import com.example.ks1compose.presentation.ui.grades.AddGradeScreen
+import com.example.ks1compose.presentation.ui.grades.GradeDetailScreen
+import com.example.ks1compose.presentation.ui.grades.GradeScreen
+import com.example.ks1compose.presentation.ui.grades.GradeViewModel
+import com.example.ks1compose.presentation.ui.news.AddIdeaScreen
+import com.example.ks1compose.presentation.ui.news.IdeaScreen
+import com.example.ks1compose.presentation.ui.news.NewsViewModel
+import com.example.ks1compose.presentation.ui.news.SearchScreen
+import com.example.ks1compose.presentation.ui.profile.AccountScreen
+import com.example.ks1compose.presentation.ui.profile.EditProfileScreen
+import com.example.ks1compose.presentation.ui.profile.UserViewModel
+import com.example.ks1compose.presentation.ui.schedule.AddScheduleScreen
+import com.example.ks1compose.presentation.ui.schedule.ClassStudentsScreen
+import com.example.ks1compose.presentation.ui.schedule.LessonViewModel
+import com.example.ks1compose.presentation.ui.schedule.ScheduleScreen
+import com.example.ks1compose.presentation.ui.schedule.ScheduleViewModel
+import com.example.ks1compose.presentation.ui.schedule.TeacherScheduleScreen
+import com.example.ks1compose.presentation.common.DarkGrey
+import com.example.ks1compose.presentation.common.KS1ComposeTheme
+import com.example.ks1compose.presentation.common.LightGrey
+import com.example.ks1compose.presentation.ui.factories.GradeViewModelFactory
+import com.example.ks1compose.presentation.ui.factories.LessonViewModelFactory
+import com.example.ks1compose.presentation.ui.factories.NewsViewModelFactory
+import com.example.ks1compose.presentation.ui.factories.ScheduleViewModelFactory
+import com.example.ks1compose.presentation.ui.factories.UserViewModelFactory
+import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : ComponentActivity() {
     @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+        try {
+            FirebaseApp.initializeApp(this)
+
+            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val token = task.result
+                    getSharedPreferences("app_prefs", Context.MODE_PRIVATE).edit()
+                        .putString("fcm_token", token)
+                        .apply()
+                    Log.d("Firebase", "FCM Token: $token")
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("Firebase", "Failed to initialize Firebase", e)
+        }
 
         setContent {
             var darkTheme by rememberSaveable { mutableStateOf(false) }
@@ -93,7 +131,7 @@ class MainActivity : ComponentActivity() {
             val savedUserLogin = sharedPreferences.getString("userLogin", null)
             val savedUserRole = sharedPreferences.getString("userRole", null)
             val savedUserName = sharedPreferences.getString("userName", null)
-            val savedUserSName = sharedPreferences.getString("userSName", null)
+            val savedUserSName = sharedPreferences.getString("userSName", null) // ✅ Правильное имя
 
             // Восстанавливаем TokenManager
             LaunchedEffect(savedToken, savedUserId, savedUserRole) {
@@ -102,7 +140,7 @@ class MainActivity : ComponentActivity() {
                     TokenManager.userId = savedUserId
                     TokenManager.userRole = savedUserRole
                     TokenManager.userName = savedUserName
-                    TokenManager.userSName = savedUserSName
+                    TokenManager.userSName = savedUserSName // ✅ Используем правильную переменную
                 }
             }
 
@@ -169,10 +207,19 @@ fun AppContent(
     val navController = rememberNavController()
 
     // Инициализация ViewModel с правильными фабриками
+    // com.example.ks1compose.MainActivity.kt
+// В AppContent:
+
     val authViewModel: AuthViewModel = viewModel()
-    val userViewModel: UserViewModel = viewModel()
-    val lessonViewModel: LessonViewModel = viewModel()
-    val gradeViewModel: GradeViewModel = viewModel()
+    val userViewModel: UserViewModel = viewModel(
+        factory = UserViewModelFactory(application)  // Используем фабрику
+    )
+    val lessonViewModel: LessonViewModel = viewModel(
+        factory = LessonViewModelFactory(application)
+    )
+    val gradeViewModel: GradeViewModel = viewModel(
+        factory = GradeViewModelFactory(application)
+    )
     val scheduleViewModel: ScheduleViewModel = viewModel(
         factory = ScheduleViewModelFactory(application)
     )
@@ -338,7 +385,10 @@ fun AppContent(
                                 popUpTo("registration") { inclusive = true }
                             }
                         } else {
-                            Log.e("MainActivity", "Invalid registration response: token=$newToken, userId=$newUserId, role=$newRole")
+                            Log.e(
+                                "MainActivity",
+                                "Invalid registration response: token=$newToken, userId=$newUserId, role=$newRole"
+                            )
                         }
                     },
                     onNavigateToLogin = { navController.navigate("login") }
@@ -386,12 +436,20 @@ fun AppContent(
                 )
             }
 
+            composable("teacher_schedule") {
+                TeacherScheduleScreen(
+                    lessonViewModel = lessonViewModel,
+                    userViewModel = userViewModel
+                )
+            }
+
             // ================ Расписание ================
             composable("schedule") {
                 ScheduleScreen(
-                    lessonViewModel = lessonViewModel,
+                    scheduleViewModel = scheduleViewModel,
                     userViewModel = userViewModel,
-                    userLogin = userLogin ?: ""
+                    userLogin = userLogin ?: "",
+                    navController = navController  // Передаем navController
                 )
             }
 
@@ -451,28 +509,36 @@ fun AppContent(
             }
 
             // ================ Аккаунт ================
+            // com.example.ks1compose.MainActivity.kt
+// Найдите composable для account и исправьте:
+
+            // com.example.ks1compose.MainActivity.kt
+// Найдите composable для account и исправьте:
+
             composable(
-                "account/{userLogin}",
-                arguments = listOf(navArgument("userLogin") { type = NavType.StringType })
+                "account/{userId}",
+                arguments = listOf(navArgument("userId") { type = NavType.StringType })
             ) { backStackEntry ->
-                val login = backStackEntry.arguments?.getString("userLogin") ?: userLogin ?: ""
+                val accountUserId = backStackEntry.arguments?.getString("userId") ?: userId ?: ""
                 AccountScreen(
                     userViewModel = userViewModel,
                     authViewModel = authViewModel,
-                    onEditProfile = { navController.navigate("editProfile/$login") },
+                    onEditProfile = { profileUserId ->
+                        navController.navigate("editProfile/$profileUserId")
+                    },
                     onAddSchedule = { navController.navigate("addSchedule") },
                     onViewAllSchedules = { navController.navigate("adminSchedule") },
                     onLogout = {
                         token = null
+                        // Очищаем все переменные состояния
                         userId = null
                         userLogin = null
                         userRole = null
                         userName = null
+                        userSName = null
 
-                        // Очищаем TokenManager
                         TokenManager.clear()
 
-                        // Очищаем SharedPreferences
                         sharedPreferences.edit()
                             .remove("token")
                             .remove("userId")
@@ -486,7 +552,7 @@ fun AppContent(
                             popUpTo(0)
                         }
                     },
-                    userLogin = login,
+                    userId = accountUserId,
                     darkTheme = darkTheme,
                     onThemeChange = onThemeChange
                 )
@@ -524,17 +590,18 @@ fun AppContent(
                     }
                 )
             }
+            // В MainActivity.kt при вызове AdminScreen:
             composable("admin") {
                 AdminScreen(
                     userViewModel = userViewModel,
                     gradeViewModel = gradeViewModel,
                     onNavigateBack = { navController.navigateUp() },
                     onEditProfile = { userId ->
-                        // Переход к редактированию профиля
+                        println("📤 Navigating to edit profile with userId: $userId")  // Проверьте, что здесь UUID
                         navController.navigate("editProfile/$userId")
                     },
                     onEditGrades = { userId ->
-                        // Переход к редактированию оценок
+                        println("📤 Navigating to edit grades with userId: $userId")
                         navController.navigate("edit_grades/$userId")
                     }
                 )
@@ -580,7 +647,7 @@ private fun AppBottomBar(
             label = "Новости"
         ),
         BottomNavItem(
-            route = "account/$userLogin",
+            route = if (userId != null) "account/$userId" else "account/",
             icon = Icons.Outlined.AccountCircle,
             selectedIcon = Icons.Filled.AccountCircle,
             label = "Аккаунт"
@@ -613,8 +680,8 @@ private fun AppBottomBar(
                     isSelected = isSelected,
                     onClick = {
                         when {
-                            item.route.contains("account") && userLogin != null -> {
-                                navController.navigate("account/$userLogin") {
+                            item.route.contains("account") && userId != null -> {
+                                navController.navigate("account/$userId") {
                                     popUpTo(navController.graph.startDestinationId)
                                     launchSingleTop = true
                                 }

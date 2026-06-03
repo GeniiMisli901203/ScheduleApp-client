@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.ks1compose" />
+                  <option name="mobileSdkAppId" value="1:655090716028:android:38bd41f30d98241121a8f9" />
+                  <option name="projectId" value="schedulename-65318" />
+                  <option name="projectNumber" value="655090716028" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "655090716028",
+    "project_id": "schedulename-65318",
+    "storage_bucket": "schedulename-65318.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:655090716028:android:38bd41f30d98241121a8f9",
+        "android_client_info": {
+          "package_name": "com.example.ks1compose"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF65XXGh73a3eUxdIY7hyOC6bbH1YDiC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
