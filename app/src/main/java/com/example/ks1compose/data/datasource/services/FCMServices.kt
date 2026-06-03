@@ -53,12 +53,10 @@ class FCMService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-        // Проверяем наличие данных в уведомлении
         if (remoteMessage.data.isNotEmpty()) {
             handleDataMessage(remoteMessage.data)
         }
 
-        // Проверяем наличие уведомления
         remoteMessage.notification?.let { notification ->
             showNotification(
                 title = notification.title ?: "Уведомление",
@@ -146,7 +144,6 @@ class FCMService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        // Создаем Intent для открытия приложения при нажатии
         val intent = Intent(this, MainActivity::class.java).apply {
             putExtra("notification_type", data["type"])
             putExtra("notification_data", HashMap(data))
@@ -160,7 +157,6 @@ class FCMService : FirebaseMessagingService() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        // Строим уведомление
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle(title)
             .setContentText(body)
@@ -170,7 +166,6 @@ class FCMService : FirebaseMessagingService() {
             .setAutoCancel(true)
             .build()
 
-        // Показываем уведомление
         notificationManager.notify(data.hashCode(), notification)
     }
 }

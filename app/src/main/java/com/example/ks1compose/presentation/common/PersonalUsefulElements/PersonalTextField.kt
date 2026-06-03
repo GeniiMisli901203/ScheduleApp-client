@@ -68,7 +68,7 @@ fun PersonalTextField(
         else -> keyboardType
     }
 
-    // Иконка для поля пароля
+
     val passwordTrailingIcon = when {
         isPassword -> {
             if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility
@@ -76,7 +76,7 @@ fun PersonalTextField(
         else -> null
     }
 
-    // Обработчик клика для поля пароля
+
     val passwordOnClick = when {
         isPassword -> {
             { passwordVisible = !passwordVisible }
@@ -84,7 +84,7 @@ fun PersonalTextField(
         else -> null
     }
 
-    // Финальная trailing иконка и обработчик
+
     val finalTrailingIcon = passwordTrailingIcon ?: trailingIcon
     val finalOnClick = passwordOnClick ?: onTrailingIconClick
 
@@ -95,32 +95,32 @@ fun PersonalTextField(
             label = { Text(label, fontSize = 14.sp, color = if (isError) Color.Red else Color.White) },
             shape = RoundedCornerShape(25.dp),
             colors = TextFieldDefaults.colors(
-                // Цвета контейнера
+
                 unfocusedContainerColor = TextFieldBGColor,
                 focusedContainerColor = TextFieldBGColor.copy(alpha = 0.9f),
 
-                // Цвета текста - ИСПРАВЛЕНО
-                unfocusedTextColor = Color.White,
-                focusedTextColor = Color.Black,  // Черный текст при фокусе
 
-                // Цвета лейбла
+                unfocusedTextColor = Color.White,
+                focusedTextColor = Color.Black,
+
+
                 unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
                 focusedLabelColor = MaterialTheme.colorScheme.primary,
 
-                // Цвета индикаторов
+
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = MaterialTheme.colorScheme.primary,
 
-                // Цвета ошибок
+
                 errorContainerColor = TextFieldBGColor.copy(alpha = 0.1f),
                 errorLabelColor = Color.Red,
                 errorTextColor = Color.Red,
                 errorIndicatorColor = Color.Red,
 
-                // Цвет курсора
+
                 cursorColor = MaterialTheme.colorScheme.primary,
 
-                // Disabled состояния
+
                 disabledContainerColor = TextFieldBGColor.copy(alpha = 0.5f),
                 disabledTextColor = Color.Gray,
                 disabledLabelColor = Color.Gray
@@ -182,7 +182,7 @@ fun PersonalTextField(
                 color = when {
                     readOnly -> Color.Gray
                     isError -> Color.Red
-                    else -> Color.White  // Черный текст по умолчанию
+                    else -> Color.White
                 }
             ),
             placeholder = {
@@ -205,7 +205,6 @@ fun PersonalTextField(
     }
 }
 
-// Остальные функции (PersonalTextFieldOutlined, PersonalTextFieldSmall) остаются без изменений
 
 @Composable
 fun PersonalTextFieldSmall(

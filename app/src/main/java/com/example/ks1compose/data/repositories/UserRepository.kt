@@ -1,4 +1,4 @@
-// com.example.ks1compose.data.repositories.UserRepository.kt
+
 package com.example.ks1compose.data.repositories
 
 import android.content.Context
@@ -70,8 +70,6 @@ class UserRepository(private val context: Context) {
         }
     }
 
-    // com.example.ks1compose.data.repositories.UserRepository.kt
-    // com.example.ks1compose.data.repositories.UserRepository.kt
     suspend fun updateUserInfo(
         userId: String,
         name: String,
@@ -86,16 +84,15 @@ class UserRepository(private val context: Context) {
 
                 println("📤 Sending update for user $userId")
 
-                // Проверяем, является ли текущий пользователь администратором
                 val currentUser = getUserInfo().getOrNull()
                 val isAdmin = currentUser?.role == "admin"
 
                 val response = if (isAdmin && currentUser?.userId != userId) {
-                    // Администратор редактирует другого пользователя
+
                     println("📤 Admin updating user $userId")
                     api.updateUserById(userId, "Bearer $token", request)
                 } else {
-                    // Пользователь редактирует свой профиль
+
                     println("📤 User updating own profile")
                     api.updateUserInfo("Bearer $token", request)
                 }
@@ -117,7 +114,7 @@ class UserRepository(private val context: Context) {
         }
     }
 
-    // Вспомогательная функция
+
     private fun <T> Result<T>.getOrNull(): T? {
         return if (this is Result.Success) this.data else null
     }
@@ -195,7 +192,6 @@ class UserRepository(private val context: Context) {
     suspend fun getAllStudents(forceRefresh: Boolean = false): Result<List<UserDTO>> {
         return withContext(Dispatchers.IO) {
             try {
-                // Пробуем получить из кэша
                 if (!forceRefresh) {
                     val cachedStudents = cacheManager.getStudents()
                     if (cachedStudents != null) {
@@ -207,7 +203,6 @@ class UserRepository(private val context: Context) {
                 val response = api.getAllStudents()
                 if (response.isSuccessful && response.body() != null) {
                     val students = response.body()!!.students ?: emptyList()
-                    // Сохраняем в кэш
                     cacheManager.saveStudents(students)
                     println("📡 Загружено с сервера: ${students.size} учеников")
                     Result.Success(students)

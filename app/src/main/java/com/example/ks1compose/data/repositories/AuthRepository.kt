@@ -46,7 +46,6 @@ class AuthRepository {
             val response = api.loginUser(LoginRequest(login, password))
             if (response.isSuccessful && response.body() != null) {
                 val tokenResponse = response.body()!!
-                // Сохраняем данные в TokenManager
                 TokenManager.authToken = tokenResponse.token
                 TokenManager.userId = tokenResponse.userId
                 TokenManager.userRole = tokenResponse.role

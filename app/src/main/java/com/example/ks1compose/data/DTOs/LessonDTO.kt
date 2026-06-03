@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class LessonDTO(
     val lessonId: String? = null,
     val className: String,
-    val dayOfWeek: String, // "monday", "tuesday", etc.
+    val dayOfWeek: String,
     val weekNumber: Int? = null,
     val lessonNumber: Int,
     val subjectName: String,

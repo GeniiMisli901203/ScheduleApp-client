@@ -29,15 +29,15 @@ data class LessonUIModel(
     val startTime: String?,
     val endTime: String?,
     val isCurrentLesson: Boolean = false,
-    val dayOfWeek: String? = null,      // Добавляем поле для дня недели
-    val className: String? = null       // Добавляем поле для класса
+    val dayOfWeek: String? = null,
+    val className: String? = null
 )
 
-// Модель для отображения студента в UI - ИСПРАВЛЕНО: className теперь nullable
+// Модель для отображения студента в UI
 data class StudentUIModel(
     val id: String,
     val name: String,
-    val className: String? = null,  // <-- Сделали nullable с значением по умолчанию
+    val className: String? = null,
     val averageGrade: Double? = null
 )
 
@@ -88,16 +88,16 @@ object ModelConverter {
             startTime = lesson.startTime,
             endTime = lesson.endTime,
             isCurrentLesson = false,
-            dayOfWeek = lesson.dayOfWeek,   // Добавляем день недели
-            className = lesson.className     // Добавляем класс
+            dayOfWeek = lesson.dayOfWeek,
+            className = lesson.className
         )
     }
 
     fun convertUserToStudentModel(user: UserDTO): StudentUIModel {
         return StudentUIModel(
             id = user.userId,
-            name = "${user.name ?: ""} ${user.sName ?: ""}".trim(), // Защита от null
-            className = user.uClass,  // Теперь может быть null, и это ок
+            name = "${user.name ?: ""} ${user.sName ?: ""}".trim(),
+            className = user.uClass,
             averageGrade = null
         )
     }

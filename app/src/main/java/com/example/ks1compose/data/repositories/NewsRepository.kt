@@ -1,4 +1,4 @@
-// com.example.ks1compose.data.repositories.NewsRepository.kt
+
 package com.example.ks1compose.data.repositories
 
 import android.content.Context
@@ -24,13 +24,10 @@ class NewsRepository(private val context: Context) {
         object Loading : Result<Nothing>()
     }
 
-    // ================ ОСНОВНЫЕ МЕТОДЫ ================
-
-    // Получить все новости с поддержкой кэша
     suspend fun getAllNews(forceRefresh: Boolean = false): Result<List<NewsDTO>> {
         return withContext(Dispatchers.IO) {
             try {
-                // Пробуем получить из кэша
+
                 if (!forceRefresh) {
                     val cachedNews = cacheManager.getNews()
                     if (cachedNews != null) {
@@ -39,7 +36,7 @@ class NewsRepository(private val context: Context) {
                     }
                 }
 
-                // Загружаем с сервера
+
                 val response = api.getAllNews()
                 if (response.isSuccessful && response.body() != null) {
                     val newsList = response.body()!!.newsList ?: emptyList()
@@ -51,7 +48,7 @@ class NewsRepository(private val context: Context) {
                     Result.Error(response.message() ?: "Ошибка загрузки", response.code())
                 }
             } catch (e: HttpException) {
-                // При ошибке сети пробуем кэш
+
                 val cachedNews = cacheManager.getNews()
                 if (cachedNews != null) {
                     Result.Success(cachedNews)
@@ -71,13 +68,12 @@ class NewsRepository(private val context: Context) {
         }
     }
 
-    // Добавить новость
+
     suspend fun addNews(token: String, news: NewsDTO): Result<String> {
         return withContext(Dispatchers.IO) {
             try {
                 val response = apiWithAuth.addNews(token, news)
                 if (response.isSuccessful && response.body() != null) {
-                    // Очищаем кэш при добавлении
                     cacheManager.clearAllCache()
                     Result.Success("Новость успешно добавлена")
                 } else {
@@ -96,7 +92,6 @@ class NewsRepository(private val context: Context) {
         }
     }
 
-    // Поиск новостей
     suspend fun searchNews(query: String): Response<NewsResponse> {
         return try {
             api.searchNews(query)
@@ -105,7 +100,6 @@ class NewsRepository(private val context: Context) {
         }
     }
 
-    // Удалить новость
     suspend fun deleteNews(token: String, newsId: String): Result<String> {
         return withContext(Dispatchers.IO) {
             try {

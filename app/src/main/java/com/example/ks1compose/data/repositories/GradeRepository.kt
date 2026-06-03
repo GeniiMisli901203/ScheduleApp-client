@@ -1,4 +1,4 @@
-// com.example.ks1compose.data.repositories.GradeRepository.kt
+
 package com.example.ks1compose.data.repositories
 
 import android.content.Context
@@ -24,7 +24,6 @@ class GradeRepository(private val context: Context) {
         object Loading : Result<Nothing>()
     }
 
-    // Получить оценки ученика за сегодня
     suspend fun getTodayGrades(studentId: String): Result<List<GradeUIModel>> {
         return withContext(Dispatchers.IO) {
             try {
@@ -48,7 +47,6 @@ class GradeRepository(private val context: Context) {
         }
     }
 
-    // Получить оценки ученика с поддержкой кэша
     suspend fun getMyGrades(
         subject: String? = null,
         startDate: String? = null,
@@ -59,7 +57,7 @@ class GradeRepository(private val context: Context) {
             try {
                 val studentId = TokenManager.userId ?: return@withContext Result.Error("Не авторизован")
 
-                // Пробуем получить из кэша
+
                 if (!forceRefresh) {
                     val cachedGrades = cacheManager.getGrades(studentId)
                     if (cachedGrades != null) {
@@ -74,9 +72,8 @@ class GradeRepository(private val context: Context) {
 
                 if (response.isSuccessful && response.body() != null) {
                     val grades = response.body()!!.grades ?: emptyList()
-                    val gradeDTOs = grades // уже GradeDTO
+                    val gradeDTOs = grades
 
-                    // Сохраняем в кэш
                     cacheManager.saveGrades(studentId, gradeDTOs)
 
                     val uiModels = grades.map { ModelConverter.convertGradeToUIModel(it) }
@@ -109,7 +106,7 @@ class GradeRepository(private val context: Context) {
         }
     }
 
-    // Получить оценки ученика по ID (для администратора)
+
     suspend fun getUserGrades(userId: String): Result<List<GradeUIModel>> {
         return withContext(Dispatchers.IO) {
             try {

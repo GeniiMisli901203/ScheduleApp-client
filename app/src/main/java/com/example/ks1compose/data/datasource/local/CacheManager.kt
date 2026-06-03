@@ -23,8 +23,6 @@ class CacheManager(private val context: Context) {
         }
     }
 
-    // ================ НОВОСТИ ================
-
     suspend fun getNews(forceRefresh: Boolean = false): List<NewsDTO>? {
         if (!forceRefresh && appCache.isNewsCacheValid()) {
             return appCache.getCachedNews()
@@ -40,7 +38,6 @@ class CacheManager(private val context: Context) {
         appCache.cacheNewsAsync(newsList)
     }
 
-    // ================ РАСПИСАНИЕ ================
 
     suspend fun getSchedules(): List<ScheduleDTO>? {
         return appCache.getCachedSchedules()
@@ -50,7 +47,6 @@ class CacheManager(private val context: Context) {
         appCache.cacheSchedules(schedules)
     }
 
-    // ================ УРОКИ ================
 
     suspend fun getLessons(className: String, dayOfWeek: String): List<LessonDTO>? {
         val key = appCache.getLessonsCacheKey(className, dayOfWeek)
@@ -67,7 +63,6 @@ class CacheManager(private val context: Context) {
         appCache.cacheLessonsAsync(lessons, key)
     }
 
-    // ================ ОЦЕНКИ ================
 
     suspend fun getGrades(studentId: String): List<GradeDTO>? {
         val key = appCache.getGradesCacheKey(studentId)
@@ -84,7 +79,6 @@ class CacheManager(private val context: Context) {
         appCache.cacheGradesAsync(grades, key)
     }
 
-    // ================ УЧИТЕЛЯ И УЧЕНИКИ ================
 
     suspend fun getTeachers(): List<UserDTO>? {
         return appCache.getCachedTeachers()
@@ -102,16 +96,14 @@ class CacheManager(private val context: Context) {
         appCache.cacheStudents(students)
     }
 
-    // ================ ОЧИСТКА ================
 
     suspend fun clearAllCache() {
         appCache.clearAllCache()
     }
 
     suspend fun clearUserRelatedCache(userId: String) {
-        // Исправлено: передаем строковые ключи, а не Preferences.Key
         appCache.clearCache(
-            "grades_cache",  // Строковое представление GRADES_CACHE
+            "grades_cache",
             appCache.getGradesCacheKey(userId)
         )
     }

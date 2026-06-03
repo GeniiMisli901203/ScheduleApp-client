@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class GradeDTO(
     val gradeId: String? = null,
     val studentId: String,
-    val studentName: String? = null,     // Добавить имя ученика
+    val studentName: String? = null,
     val teacherId: String,
     val teacherName: String? = null,
     val subjectName: String,

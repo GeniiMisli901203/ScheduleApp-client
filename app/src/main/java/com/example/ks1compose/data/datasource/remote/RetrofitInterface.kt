@@ -25,15 +25,12 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
-
-    // ================ Аутентификация ================
     @POST("/register")
     suspend fun registerUser(@Body request: RegistrationRequest): Response<TokenResponse>
 
     @POST("/login")
     suspend fun loginUser(@Body request: LoginRequest): Response<TokenResponse>
 
-    // ================ Пользователи ================
     @GET("/user/info")
     suspend fun getUserInfoByToken(
         @Header("Authorization") token: String
@@ -68,7 +65,6 @@ interface ApiService {
         @Path("className") className: String
     ): Response<UsersListResponse>
 
-    // ================ Оценки ================
     @POST("/grades/add")
     suspend fun addGrade(
         @Header("Authorization") token: String,
@@ -111,7 +107,6 @@ interface ApiService {
         @Path("gradeId") gradeId: String
     ): Response<GradeResponse>
 
-    // ================ Расписание (новое) ================
     @GET("/lessons/{className}/{dayOfWeek}")
     suspend fun getLessonsByClassAndDay(
         @Path("className") className: String,
@@ -144,7 +139,6 @@ interface ApiService {
         @Path("lessonId") lessonId: String
     ): Response<LessonsResponse>
 
-    // ================ Расписание (старое) ================
     @GET("/schedule")
     suspend fun getAllSchedules(): Response<ScheduleResponse>
 
@@ -171,7 +165,6 @@ interface ApiService {
         @Path("scheduleId") scheduleId: String
     ): Response<ScheduleResponse>
 
-    // ================ Учителя и предметы ================
     @POST("/teacher/subjects")
     suspend fun addTeacherSubject(
         @Header("Authorization") token: String,
@@ -183,7 +176,6 @@ interface ApiService {
         @Path("teacherId") teacherId: String
     ): Response<TeacherSubjectsResponse>
 
-    // ================ НОВОСТИ ================
     @GET("/news")
     suspend fun getAllNews(): Response<NewsResponse>
 
@@ -204,7 +196,6 @@ interface ApiService {
         @Path("newsId") newsId: String
     ): Response<NewsResponse>
 
-    // ================ Вспомогательные эндпоинты ================
     @GET("/user/role-check")
     suspend fun checkRole(
         @Header("Authorization") token: String
@@ -216,14 +207,12 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<GradeResponse>
 
-    // Получить оценки всего класса с группировкой по ученикам
     @GET("/grades/class/{className}/students")
     suspend fun getClassStudentsGrades(
         @Path("className") className: String,
         @Header("Authorization") token: String
     ): Response<Map<String, Any>>
 
-    // Получить средний балл ученика по предметам
     @GET("/grades/average/{studentId}/subjects")
     suspend fun getStudentAveragesBySubject(
         @Path("studentId") studentId: String,
@@ -240,7 +229,6 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Response<GradeResponse>
 
-    // com.example.ks1compose.data.datasource.remote.ApiService.kt
 
     @PUT("/user/update/{userId}")
     suspend fun updateUserById(
@@ -256,8 +244,6 @@ interface ApiService {
         @Query("weekNumber") weekNumber: Int? = null
     ): Response<Map<String, Any>>
 
-// com.example.ks1compose.data.datasource.remote.ApiService.kt
-// Добавьте эти методы в интерфейс ApiService
 
     @POST("/notifications/register-token")
     suspend fun registerFcmToken(

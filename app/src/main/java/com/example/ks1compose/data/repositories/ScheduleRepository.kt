@@ -26,7 +26,6 @@ class ScheduleRepository(private val context: Context) {
     }
 
 
-    // Получить все расписания
     suspend fun getAllSchedules(): Response<ScheduleResponse> {
         return try {
             api.getAllSchedules()
@@ -35,7 +34,6 @@ class ScheduleRepository(private val context: Context) {
         }
     }
 
-    // Получить все расписания с кэшированием
     suspend fun getAllSchedulesCached(): Result<List<ScheduleDTO>> {
         return withContext(Dispatchers.IO) {
             try {
@@ -65,7 +63,6 @@ class ScheduleRepository(private val context: Context) {
         }
     }
 
-    // Получить расписание по дню
     suspend fun getSchedulesByDay(day: String): Response<ScheduleResponse> {
         return try {
             api.getSchedulesByDay(day)
@@ -74,7 +71,6 @@ class ScheduleRepository(private val context: Context) {
         }
     }
 
-    // Получить расписание по дню с кэшированием
     suspend fun getSchedulesByDayCached(day: String): Result<List<ScheduleDTO>> {
         val cacheKey = "schedule_day_${day}"
 
@@ -106,7 +102,6 @@ class ScheduleRepository(private val context: Context) {
         }
     }
 
-    // Получить расписание класса на день
     suspend fun getSchedule(className: String, day: String): Response<ScheduleResponse> {
         return try {
             api.getSchedule(className, day)
@@ -115,7 +110,6 @@ class ScheduleRepository(private val context: Context) {
         }
     }
 
-    // Получить расписание класса на день с кэшированием
     suspend fun getScheduleCached(className: String, day: String): Result<List<ScheduleDTO>> {
         val cacheKey = "schedule_${className}_${day}"
 
@@ -147,7 +141,6 @@ class ScheduleRepository(private val context: Context) {
         }
     }
 
-    // Добавить расписание
     suspend fun addSchedule(token: String, schedule: ScheduleDTO): Response<ScheduleResponse> {
         return try {
             val response = apiWithAuth.addSchedule(token, schedule)
@@ -160,7 +153,6 @@ class ScheduleRepository(private val context: Context) {
         }
     }
 
-    // Удалить расписание
     suspend fun deleteSchedule(token: String, scheduleId: String): Response<ScheduleResponse> {
         return try {
             val response = apiWithAuth.deleteSchedule(token, scheduleId)
@@ -173,7 +165,6 @@ class ScheduleRepository(private val context: Context) {
         }
     }
 
-    // ================ МЕТОДЫ ДЛЯ РАБОТЫ С КЭШЕМ ================
 
     private fun saveSchedulesToCache(schedules: List<ScheduleDTO>) {
         try {

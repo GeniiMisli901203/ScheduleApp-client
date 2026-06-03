@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-// DataStore для пользовательских данных
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
 
 class SecureDataStore(private val context: Context) {
@@ -21,7 +20,6 @@ class SecureDataStore(private val context: Context) {
     private val gson = Gson()
 
     companion object {
-        // Ключи для данных пользователя
         val USER_ID = stringPreferencesKey("user_id")
         val USER_TOKEN = stringPreferencesKey("user_token")
         val USER_LOGIN = stringPreferencesKey("user_login")
@@ -32,12 +30,10 @@ class SecureDataStore(private val context: Context) {
         val USER_CLASS = stringPreferencesKey("user_class")
         val USER_SCHOOL = stringPreferencesKey("user_school")
 
-        // Ключи для настроек
         val DARK_THEME = booleanPreferencesKey("dark_theme")
         val FIRST_LAUNCH = booleanPreferencesKey("first_launch")
     }
 
-    // Сохранить данные пользователя
     suspend fun saveUserData(
         userId: String,
         token: String,
@@ -62,7 +58,6 @@ class SecureDataStore(private val context: Context) {
         }
     }
 
-    // Сохранить DTO пользователя
     suspend fun saveUser(user: UserDTO, token: String, login: String) {
         context.dataStore.edit { preferences ->
             preferences[USER_ID] = user.userId
@@ -77,7 +72,6 @@ class SecureDataStore(private val context: Context) {
         }
     }
 
-    // Получить данные пользователя как Flow
     val userDataFlow: Flow<UserData?> = context.dataStore.data.map { preferences ->
         val userId = preferences[USER_ID] ?: return@map null
         UserData(
@@ -93,17 +87,14 @@ class SecureDataStore(private val context: Context) {
         )
     }
 
-    // Получить токен
     suspend fun getToken(): String? {
         return context.dataStore.data.first()[USER_TOKEN]
     }
 
-    // Получить роль пользователя
     suspend fun getUserRole(): String? {
         return context.dataStore.data.first()[USER_ROLE]
     }
 
-    // Очистить данные пользователя (выход)
     suspend fun clearUserData() {
         context.dataStore.edit { preferences ->
             preferences.remove(USER_ID)
@@ -118,25 +109,21 @@ class SecureDataStore(private val context: Context) {
         }
     }
 
-    // Сохранить тему
     suspend fun saveDarkTheme(isDark: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[DARK_THEME] = isDark
         }
     }
 
-    // Получить тему
     val darkThemeFlow: Flow<Boolean> = context.dataStore.data.map { preferences ->
         preferences[DARK_THEME] ?: false
     }
 
-    // Проверить первый запуск
     suspend fun isFirstLaunch(): Boolean {
         val preferences = context.dataStore.data.first()
         return preferences[FIRST_LAUNCH] ?: true
     }
 
-    // Отметить что первый запуск пройден
     suspend fun setFirstLaunchDone() {
         context.dataStore.edit { preferences ->
             preferences[FIRST_LAUNCH] = false

@@ -10,7 +10,7 @@ data class UserDTO(
     val email: String,
     val name: String,
     val sName: String,
-    @SerializedName("uClass") val uClass: String,  // Для Gson
+    @SerializedName("uClass") val uClass: String,
     val school: String,
     val role: String,
     val teacherId: String? = null

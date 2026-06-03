@@ -1,4 +1,3 @@
-// com.example.ks1compose.data.repositories.LessonRepository.kt
 package com.example.ks1compose.data.repositories
 
 import android.content.Context
@@ -46,7 +45,7 @@ class LessonRepository(private val context: Context) {
                 if (response.isSuccessful && response.body() != null) {
                     val lessons = response.body()!!.lessons ?: emptyList()
 
-                    // Сохраняем в кэш
+
                     cacheManager.saveLessons(className, dayOfWeek, lessons)
 
                     val uiModels = lessons.map { lesson ->
@@ -124,8 +123,6 @@ class LessonRepository(private val context: Context) {
         }
     }
 
-    // com.example.ks1compose.data.repositories.LessonRepository.kt
-// Добавьте этот метод
 
     suspend fun getTeacherLessons(teacherId: String, dayOfWeek: String? = null): Result<List<LessonUIModel>> {
         return withContext(Dispatchers.IO) {
@@ -136,7 +133,6 @@ class LessonRepository(private val context: Context) {
                     val data = response.body()!!
                     val lessonsJson = data["lessons"] as? List<Map<String, Any>> ?: emptyList()
 
-                    // Преобразуем JSON в LessonDTO
                     val lessons = lessonsJson.map { lessonMap ->
                         LessonDTO(
                             lessonId = lessonMap["lessonId"] as? String,

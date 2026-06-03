@@ -11,7 +11,7 @@ data class RegistrationRequest(
     val userSName: String,
     val userClass: String,
     val userSchool: String,
-    val role: String = "student" // Добавляем роль
+    val role: String = "student"
 )
 
 

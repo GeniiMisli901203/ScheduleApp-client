@@ -27,7 +27,7 @@ class AppCache(private val context: Context) {
     private val ioScope = CoroutineScope(Dispatchers.IO)
 
     companion object {
-        // Ключи для разных типов данных
+
         val NEWS_CACHE = stringPreferencesKey("news_cache")
         val NEWS_TIMESTAMP = stringPreferencesKey("news_timestamp")
 
@@ -44,7 +44,6 @@ class AppCache(private val context: Context) {
         val STUDENTS_CACHE = stringPreferencesKey("students_cache")
     }
 
-    // ================ НОВОСТИ ================
 
     suspend fun cacheNews(newsList: List<NewsDTO>) {
         val json = gson.toJson(newsList)
@@ -71,7 +70,7 @@ class AppCache(private val context: Context) {
         return System.currentTimeMillis() - timestamp < maxAgeMs
     }
 
-    // ================ РАСПИСАНИЕ ================
+
 
     suspend fun cacheSchedules(schedules: List<ScheduleDTO>) {
         val json = gson.toJson(schedules)
@@ -92,11 +91,11 @@ class AppCache(private val context: Context) {
         }
     }
 
-    // ================ УРОКИ ================
+
 
     suspend fun cacheLessons(lessons: List<LessonDTO>, key: String) {
         val json = gson.toJson(lessons)
-        val prefKey = stringPreferencesKey(key)  // Создаем Preferences.Key из строки
+        val prefKey = stringPreferencesKey(key)
         context.cacheDataStore.edit { preferences ->
             preferences[prefKey] = json
             preferences[LESSONS_TIMESTAMP] = System.currentTimeMillis().toString()
@@ -119,7 +118,6 @@ class AppCache(private val context: Context) {
         return "lessons_${className}_${dayOfWeek}"
     }
 
-    // ================ ОЦЕНКИ ================
 
     suspend fun cacheGrades(grades: List<GradeDTO>, key: String) {
         val json = gson.toJson(grades)
@@ -146,7 +144,6 @@ class AppCache(private val context: Context) {
         return "grades_${studentId}"
     }
 
-    // ================ УЧИТЕЛЯ И УЧЕНИКИ ================
 
     suspend fun cacheTeachers(teachers: List<UserDTO>) {
         val json = gson.toJson(teachers)
@@ -184,7 +181,6 @@ class AppCache(private val context: Context) {
         }
     }
 
-    // ================ ОБЩИЕ МЕТОДЫ ================
 
     suspend fun clearAllCache() {
         context.cacheDataStore.edit { preferences ->
@@ -201,7 +197,6 @@ class AppCache(private val context: Context) {
         }
     }
 
-    // Асинхронное кэширование
     fun cacheNewsAsync(newsList: List<NewsDTO>) {
         ioScope.launch {
             cacheNews(newsList)

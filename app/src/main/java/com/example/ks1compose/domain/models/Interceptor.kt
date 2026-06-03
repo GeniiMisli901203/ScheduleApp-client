@@ -14,7 +14,6 @@ class AuthInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 
-        // Добавляем токен если он есть
         val token = TokenManager.authToken
         val request = if (!token.isNullOrEmpty()) {
             originalRequest.newBuilder()
@@ -28,7 +27,6 @@ class AuthInterceptor : Interceptor {
     }
 }
 
-// Обновленный RetrofitInstance с AuthInterceptor
 object RetrofitInstanceWithAuth {
     private const val BASE_URL = "http://10.0.2.2:8080/"
 
